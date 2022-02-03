@@ -1,20 +1,56 @@
 import functions as f
+import sys_func as sys_f
 glob_arg=[]
 std_operator={"+": f.sum, "-": f.sub, "*":f.mol, "/": f.div}
 
-def catasta(args, operators):
+def isInt(var):
+    try:
+        var=int(var)
+        return True
+    except Exception:
+        return False
+
+def launch(operators, operator):
+    global glob_arg
+    #esegui la relativa funzione
+    result=operators[operator](*list(map(float, glob_arg)))
+    print("------------------------------------")
+    print("> " + str(result))
+    glob_arg=[result]
+
+def catasta(operators):
+    global glob_arg 
     #aspetto un input
     while(True):
         new_arg=input("> ")
         #se è un operatore
         if new_arg in operators:
-            #esegui la relativa funzione
-            result=operators[new_arg](*list(map(int, args)))
-            print("------------------------------------")
-            print("> " + str(result))
-            args=[result] 
-        #se è un numero aggiungilo agli altri
+            #lancio la funzione
+            launch(operators, new_arg)
         else:
-            args.append(new_arg)
-        
-catasta(glob_arg, std_operator)
+            #se è un numero aggiungilo agli altri
+            if isInt(new_arg)== True:
+                new_arg=int(new_arg)
+                glob_arg.append(new_arg)
+
+            else:
+            #altrimenti controlla che ci sia un operatore (num+operatore)
+                arg_part=0
+                oper_part=""
+                counter=-1
+
+                for elem in new_arg:
+                    if isInt(elem) == True:
+                        counter +=1
+                    else:
+                        #dividi argomento in numero e operatore
+                        arg_part=int(new_arg[:counter+1])
+                        oper_part=new_arg[counter+1:]
+                        #aggiungi l'argomento
+                        glob_arg.append(arg_part)
+                        #esegui operatore
+                        if oper_part in operators:
+                            launch(operators, oper_part)
+                            break
+
+catasta(std_operator)
