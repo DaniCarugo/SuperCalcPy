@@ -1,11 +1,13 @@
+"""CalcPy by Daniele Carugo - Versione 1.1.1"""
+
 import functions as f
 import sys_func as sys_f
 glob_arg=[]
 std_operator={"+": f.sum, "-": f.sub, "*":f.mol, "/": f.div}
 
-def isInt(var):
+def canBeFloat(var):
     try:
-        var=int(var)
+        var=float(var)
         return True
     except Exception:
         return False
@@ -29,8 +31,8 @@ def catasta(operators):
             launch(operators, new_arg)
         else:
             #se è un numero aggiungilo agli altri
-            if isInt(new_arg)== True:
-                new_arg=int(new_arg)
+            if canBeFloat(new_arg)== True:
+                new_arg=float(new_arg)
                 glob_arg.append(new_arg)
 
             else:
@@ -40,11 +42,14 @@ def catasta(operators):
                 counter=-1
 
                 for elem in new_arg:
-                    if isInt(elem) == True:
+                    if canBeFloat(elem) == True:
+                        counter +=1
+                    #salto il punto per i decimali
+                    elif elem == ".":
                         counter +=1
                     else:
                         #dividi argomento in numero e operatore
-                        arg_part=int(new_arg[:counter+1])
+                        arg_part=float(new_arg[:counter+1])
                         oper_part=new_arg[counter+1:]
                         #aggiungi l'argomento
                         glob_arg.append(arg_part)
